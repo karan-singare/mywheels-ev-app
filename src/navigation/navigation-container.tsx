@@ -3,6 +3,7 @@ import { NavigationContainer as RNNavigationContainer } from '@react-navigation/
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, MoreHorizontal } from 'lucide-react-native';
 import { useColorScheme } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HomeScreen, MoreScreen } from '../screens';
 
 const Tab = createBottomTabNavigator();
@@ -20,6 +21,7 @@ function MoreTabIcon({ color, size }: TabIconProps) {
 export function NavigationContainer() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const insets = useSafeAreaInsets();
 
   return (
     <RNNavigationContainer
@@ -45,6 +47,9 @@ export function NavigationContainer() {
           headerShown: false,
           tabBarActiveTintColor: isDark ? '#60a5fa' : '#2563eb',
           tabBarInactiveTintColor: isDark ? '#71717a' : '#a1a1aa',
+          sceneStyle: {
+            paddingTop: insets.top,
+          },
         }}>
         <Tab.Screen
           name="Home"
