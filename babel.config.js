@@ -6,7 +6,7 @@ module.exports = {
       {
         root: ['./'],
         alias: {
-          '@': './',
+          '@gluestackui': './components/ui',
         },
       },
     ],

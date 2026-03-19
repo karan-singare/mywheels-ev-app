@@ -5,8 +5,11 @@
       "jest"
     ],
     "paths": {
-      "@/*": [
-        "./*"
+      "@gluestackui": [
+        "./components/ui"
+      ],
+      "@gluestackui/*": [
+        "./components/ui/*"
       ]
     }
   },
