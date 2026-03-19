@@ -1,7 +1,14 @@
-import { MMKV } from 'react-native-mmkv';
+import { createMMKV } from 'react-native-mmkv';
 import { Middleware } from '@reduxjs/toolkit';
 
-const storage = new MMKV();
+let storage: ReturnType<typeof createMMKV> | null = null;
+
+function getStorage() {
+  if (!storage) {
+    storage = createMMKV();
+  }
+  return storage;
+}
 
 const PERSISTED_SLICES = ['auth', 'rider', 'kyc', 'rentals', 'vehicles'] as const;
 
@@ -14,7 +21,7 @@ export const mmkvPersistenceMiddleware: Middleware = (store) => (next) => (actio
   const state = store.getState();
 
   for (const key of PERSISTED_SLICES) {
-    storage.set(`redux_${key}`, JSON.stringify(state[key]));
+    getStorage().set(`redux_${key}`, JSON.stringify(state[key]));
   }
 
   return result;
@@ -28,7 +35,7 @@ export function getPersistedState(): Record<string, unknown> {
   const preloaded: Record<string, unknown> = {};
 
   for (const key of PERSISTED_SLICES) {
-    const raw = storage.getString(`redux_${key}`);
+    const raw = getStorage().getString(`redux_${key}`);
     if (raw) {
       try {
         preloaded[key] = JSON.parse(raw);
@@ -47,6 +54,6 @@ export function getPersistedState(): Record<string, unknown> {
  */
 export function clearPersistedState(): void {
   for (const key of PERSISTED_SLICES) {
-    storage.delete(`redux_${key}`);
+    getStorage().delete(`redux_${key}`);
   }
 }
