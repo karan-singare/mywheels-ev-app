@@ -4,6 +4,7 @@ import { VehicleStatus } from '../../enums/vehicle-status.enum';
 
 export interface VehiclesState {
   vehicles: Vehicle[];
+  currentVehicle: Vehicle | null;
   statusCounts: Record<VehicleStatus, number>;
   currentFilter: VehicleStatus | 'all';
   loading: boolean;
@@ -12,6 +13,7 @@ export interface VehiclesState {
 
 const initialState: VehiclesState = {
   vehicles: [],
+  currentVehicle: null,
   statusCounts: { available: 0, rented: 0, maintenance: 0 },
   currentFilter: 'all',
   loading: false,
@@ -130,6 +132,26 @@ const vehiclesSlice = createSlice({
       (state, action) => {
         state.loading = false;
         state.error = action.payload as string ?? 'Failed to update vehicle status';
+      },
+    );
+
+    // fetchVehicle (single) lifecycle
+    builder.addMatcher(
+      (action) => action.type === 'vehicles/fetchVehicle/pending',
+      (state) => { state.loading = true; state.error = null; },
+    );
+    builder.addMatcher(
+      (action) => action.type === 'vehicles/fetchVehicle/fulfilled',
+      (state, action) => {
+        state.loading = false;
+        state.currentVehicle = action.payload ?? null;
+      },
+    );
+    builder.addMatcher(
+      (action) => action.type === 'vehicles/fetchVehicle/rejected',
+      (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string ?? 'Failed to fetch vehicle';
       },
     );
   },

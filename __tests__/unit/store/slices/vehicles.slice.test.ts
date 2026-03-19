@@ -3,6 +3,7 @@ import { Vehicle } from '../../../../src/types/vehicle.type';
 
 const initialState: VehiclesState = {
   vehicles: [],
+  currentVehicle: null,
   statusCounts: { available: 0, rented: 0, maintenance: 0 },
   currentFilter: 'all',
   loading: false,

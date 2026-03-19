@@ -42,6 +42,18 @@ export const assignVehicle = createAsyncThunk(
   },
 );
 
+export const fetchVehicle = createAsyncThunk(
+  'vehicles/fetchVehicle',
+  async (vehicleId: string, { rejectWithValue }) => {
+    try {
+      const vehicle = await vehicleService.getVehicle(vehicleId);
+      return vehicle;
+    } catch (error) {
+      return rejectWithValue((error as Error).message);
+    }
+  },
+);
+
 export const updateVehicleStatus = createAsyncThunk(
   'vehicles/updateVehicleStatus',
   async (

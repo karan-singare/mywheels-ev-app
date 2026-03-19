@@ -25,6 +25,7 @@ export type AdminTabParamList = {
 export type RiderStackParamList = {
   RiderTabs: undefined;
   Payment: { planId: string };
+  PaymentHistory: undefined;
   Onboarding: undefined;
   KYC: undefined;
 };

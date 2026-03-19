@@ -135,7 +135,7 @@ Incremental implementation of the MyWheels EV React Native app across 4 phases, 
 - [x] 4. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [-] 5. Phase 2 — Rider onboarding, KYC, and document upload
+- [x] 5. Phase 2 — Rider onboarding, KYC, and document upload
   - [x] 5.1 Implement onboarding screen
     - Create `src/screens/onboarding/onboarding.screen.tsx` with multi-step form: step 1 (full name, DOB, gender), step 2 (address, city defaulting to Hyderabad), step 3 (emergency contact)
     - Implement field validation using `validators.util.ts` — prevent progression on invalid input with field-level error messages
@@ -177,18 +177,18 @@ Incremental implementation of the MyWheels EV React Native app across 4 phases, 
     - If KYC status is not `approved`, display a message "KYC approval is required to view plans" and block access to the plan selector
     - _Requirements: 5.6_
 
-- [ ] 6. Checkpoint — Ensure all tests pass
+- [x] 6. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 7. Phase 3 — Rental plans, payment, and rider dashboard
-  - [ ] 7.1 Implement plans screen
+- [x] 7. Phase 3 — Rental plans, payment, and rider dashboard
+  - [x] 7.1 Implement plans screen
     - Create `src/constants/plans.constant.ts` with the 3 rental plan definitions (Daily ₹249, Weekly ₹1,499, Monthly ₹4,999) matching seed data
     - Create `src/screens/rider/plans.screen.tsx` displaying 3 plan cards using `pricing-card.component.tsx`, with Monthly highlighted as featured with "Best for Full-Time Riders" tag
     - Include note: "Contact us for exact rates based on your usage and vehicle preference"
     - On plan selection, navigate to payment screen with selected plan details
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
 
-  - [ ] 7.2 Implement payment screen
+  - [x] 7.2 Implement payment screen
     - Create `src/screens/rider/payment.screen.tsx` displaying order summary (plan name, price, rental period)
     - Implement payment method selection: UPI, debit card, credit card, net banking
     - Implement payment gateway integration stub (initiatePayment → confirmPayment flow)
@@ -200,7 +200,7 @@ Incremental implementation of the MyWheels EV React Native app across 4 phases, 
     - **Property 9: Payment order summary matches selected plan** — for any selected plan, the payment screen displays the exact plan name, price, and period
     - **Validates: Requirements 8.1**
 
-  - [ ] 7.4 Implement rider dashboard screen
+  - [x] 7.4 Implement rider dashboard screen
     - Create `src/screens/rider/dashboard.screen.tsx` displaying:
       - Active rental info: plan name, start date, end date, days remaining (computed via `formatters.util.ts`)
       - Assigned vehicle details: model, registration number, vehicle ID
@@ -216,7 +216,7 @@ Incremental implementation of the MyWheels EV React Native app across 4 phases, 
     - **Property 14: Renewal reminder threshold** — for any active rental, reminder shows iff end date is within 3 days
     - **Validates: Requirements 9.5**
 
-  - [ ] 7.6 Implement payment receipt and history
+  - [x] 7.6 Implement payment receipt and history
     - Implement `getReceipt` in `payment.service.ts` returning `PaymentReceipt` with all transaction details
     - Add payment history view accessible from dashboard quick actions, listing past payments via `fetchHistory` thunk
     - _Requirements: 8.6, 9.3_
@@ -225,30 +225,30 @@ Incremental implementation of the MyWheels EV React Native app across 4 phases, 
     - **Property 10: Payment and receipt round-trip** — for any successful payment, the stored record and retrieved receipt contain matching rider ID, plan ID, amount, method, and timestamp
     - **Validates: Requirements 8.3, 8.6**
 
-  - [ ] 7.8 Implement profile and support screens
+  - [x] 7.8 Implement profile and support screens
     - Create `src/screens/rider/profile.screen.tsx` displaying rider profile info, KYC status, with navigation to onboarding edit and KYC screen
     - Create `src/screens/rider/support.screen.tsx` with contact info (phone, email, WhatsApp link) and FAQ
     - _Requirements: 9.3, 9.4_
 
-- [ ] 8. Checkpoint — Ensure all tests pass
+- [x] 8. Checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Phase 4 — GPS tracking, battery monitoring, inventory, and admin
-  - [ ] 9.1 Implement GPS tracking integration
+- [x] 9. Phase 4 — GPS tracking, battery monitoring, inventory, and admin
+  - [x] 9.1 Implement GPS tracking integration
     - Implement `deeplink.util.ts` functions for opening the external GPS tracking app with vehicle pre-selected
     - Add "Track My Vehicle" action on rider dashboard that opens the GPS app via deep link
     - Handle case where GPS app is not installed: display message with install link
     - Display last known GPS coordinates and timestamp on admin vehicle detail view
     - _Requirements: 10.1, 10.2, 10.3, 10.4_
 
-  - [ ] 9.2 Implement battery monitoring integration
+  - [x] 9.2 Implement battery monitoring integration
     - Implement deep link to external Bluetooth battery monitoring app in `deeplink.util.ts`
     - Display battery percentage on rider dashboard when data is available
     - Display battery percentage and battery number on admin vehicle detail view
     - Handle unavailable battery data: show "Battery data unavailable — connect via Bluetooth app" with link
     - _Requirements: 11.1, 11.2, 11.3, 11.4_
 
-  - [ ] 9.3 Implement inventory management screen
+  - [x] 9.3 Implement inventory management screen
     - Create `src/screens/admin/inventory.screen.tsx` displaying vehicle list with columns: vehicle ID, model, registration number, status, assigned rider, battery number
     - Implement add vehicle form storing record in Supabase with status defaulting to `available`
     - Implement assign vehicle to rider (status → `rented`, link rider)
@@ -263,13 +263,13 @@ Incremental implementation of the MyWheels EV React Native app across 4 phases, 
     - **Property 16: Vehicle inventory filtering and counts** — for any set of vehicles with mixed statuses, filtering returns correct subset and counts match
     - **Validates: Requirements 12.5, 12.6**
 
-  - [ ] 9.5 Implement admin dashboard screen
+  - [x] 9.5 Implement admin dashboard screen
     - Create `src/screens/admin/admin-dashboard.screen.tsx` with summary cards: total riders, active rentals, available vehicles, maintenance vehicles, pending KYC reviews
     - Implement navigation to: KYC review queue, inventory, rider list, payment history
     - Display recent activity: latest signups, recent payments, recent KYC changes
     - _Requirements: 13.1, 13.2, 13.4_
 
-  - [ ] 9.6 Implement KYC review screen
+  - [x] 9.6 Implement KYC review screen
     - Create `src/screens/admin/kyc-review.screen.tsx` displaying list of riders with `under_review` KYC status
     - Implement approve action: update KYC status to `approved`, notify rider
     - Implement reject action: update KYC status to `rejected` with reason, allow rider resubmission
@@ -281,11 +281,11 @@ Incremental implementation of the MyWheels EV React Native app across 4 phases, 
     - **Property 18: KYC review queue correctness** — the queue contains exactly riders with `under_review` status
     - **Validates: Requirements 13.3**
 
-  - [ ] 9.8 Implement admin settings screen
+  - [x] 9.8 Implement admin settings screen
     - Create `src/screens/admin/settings.screen.tsx` with admin profile info and logout action
     - _Requirements: 3.1_
 
-  - [ ] 9.9 Implement Supabase RLS policies and database schema
+  - [x] 9.9 Implement Supabase RLS policies and database schema
     - Create `src/config/supabase-schema.sql` with the complete database schema from the design (tables, indexes, constraints)
     - Create `src/config/supabase-rls.sql` with all RLS policies from the design (rider self-access, admin full access)
     - Create `src/config/supabase-seed.sql` with rental plan seed data
@@ -304,7 +304,7 @@ Incremental implementation of the MyWheels EV React Native app across 4 phases, 
     - **Property 13: Dashboard profile and KYC status display** — for any rider profile, dashboard shows correct KYC status and profile completion percentage
     - **Validates: Requirements 9.4**
 
-- [ ] 10. Final checkpoint — Ensure all tests pass
+- [x] 10. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes

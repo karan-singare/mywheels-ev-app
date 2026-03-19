@@ -1,5 +1,4 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {
   LayoutDashboard,
@@ -9,39 +8,10 @@ import {
 } from 'lucide-react-native';
 import { AdminTabParamList } from '../types/navigation.type';
 import { colors } from '../config/theme.constant';
-
-// Placeholder screens
-function AdminDashboardScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Admin Dashboard</Text>
-    </View>
-  );
-}
-
-function KYCReviewScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>KYC Review</Text>
-    </View>
-  );
-}
-
-function InventoryScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Inventory</Text>
-    </View>
-  );
-}
-
-function SettingsScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Settings</Text>
-    </View>
-  );
-}
+import { AdminDashboardScreen } from '../screens/admin/admin-dashboard.screen';
+import { KYCReviewScreen } from '../screens/admin/kyc-review.screen';
+import { InventoryScreen } from '../screens/admin/inventory.screen';
+import { AdminSettingsScreen } from '../screens/admin/settings.screen';
 
 type TabIconProps = Readonly<{ color: string; size: number }>;
 
@@ -93,23 +63,9 @@ export function AdminTabs() {
       />
       <Tab.Screen
         name="Settings"
-        component={SettingsScreen}
+        component={AdminSettingsScreen}
         options={{ tabBarIcon: SettingsIcon }}
       />
     </Tab.Navigator>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.bg,
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.textMain,
-  },
-});

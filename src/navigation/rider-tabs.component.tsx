@@ -1,68 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
-import { Home, CreditCard, User, MessageCircle, ShieldAlert } from 'lucide-react-native';
-import { RiderTabParamList } from '../types/navigation.type';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Home, CreditCard, User, MessageCircle } from 'lucide-react-native';
+import { RiderTabParamList, RiderStackParamList } from '../types/navigation.type';
 import { colors } from '../config/theme.constant';
-import { useKYC } from '../hooks/use-kyc.hook';
-
-// Placeholder screens
-function DashboardScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Dashboard</Text>
-    </View>
-  );
-}
-
-export function PlansScreen() {
-  const { status } = useKYC();
-  const navigation = useNavigation();
-
-  if (status !== 'approved') {
-    return (
-      <View style={styles.container} testID="kyc-gating-container">
-        <ShieldAlert color={colors.primary} size={64} testID="kyc-gating-icon" />
-        <Text style={styles.gatingTitle} testID="kyc-gating-message">
-          KYC approval is required to view plans
-        </Text>
-        <Text style={styles.gatingSubtitle}>
-          Complete your KYC verification to browse and select rental plans.
-        </Text>
-        <TouchableOpacity
-          style={styles.gatingButton}
-          testID="kyc-gating-navigate-button"
-          onPress={() => navigation.navigate('KYC' as never)}
-        >
-          <Text style={styles.gatingButtonText}>Go to KYC Verification</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Plans</Text>
-    </View>
-  );
-}
-
-function ProfileScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Profile</Text>
-    </View>
-  );
-}
-
-function SupportScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Support</Text>
-    </View>
-  );
-}
+import { PlansScreen } from '../screens/rider/plans.screen';
+import { PaymentScreen } from '../screens/rider/payment.screen';
+import { PaymentHistoryScreen } from '../screens/rider/payment-history.screen';
+import { DashboardScreen } from '../screens/rider/dashboard.screen';
+import { ProfileScreen } from '../screens/rider/profile.screen';
+import { SupportScreen } from '../screens/rider/support.screen';
 
 type TabIconProps = Readonly<{ color: string; size: number }>;
 
@@ -83,8 +30,9 @@ function SupportIcon({ color, size }: TabIconProps) {
 }
 
 const Tab = createBottomTabNavigator<RiderTabParamList>();
+const Stack = createNativeStackNavigator<RiderStackParamList>();
 
-export function RiderTabs() {
+function RiderTabsNavigator() {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -121,42 +69,13 @@ export function RiderTabs() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.bg,
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.textMain,
-  },
-  gatingTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.textMain,
-    textAlign: 'center',
-    marginTop: 20,
-  },
-  gatingSubtitle: {
-    fontSize: 14,
-    color: colors.mutedLight,
-    textAlign: 'center',
-    marginTop: 8,
-    paddingHorizontal: 32,
-  },
-  gatingButton: {
-    marginTop: 24,
-    backgroundColor: colors.primary,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-  },
-  gatingButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+export function RiderTabs() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="RiderTabs" component={RiderTabsNavigator} />
+      <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} />
+    </Stack.Navigator>
+  );
+}
+

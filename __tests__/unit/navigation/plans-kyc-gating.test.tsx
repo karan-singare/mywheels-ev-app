@@ -55,7 +55,7 @@ jest.mock('../../../src/store', () => ({
   useAppDispatch: () => jest.fn(),
 }));
 
-import { PlansScreen } from '../../../src/navigation/rider-tabs.component';
+import { PlansScreen } from '../../../src/screens/rider/plans.screen';
 
 function findByTestId(root: ReactTestRenderer.ReactTestInstance, testID: string) {
   return root.findAll((node) => node.props.testID === testID && typeof node.type === 'string');
