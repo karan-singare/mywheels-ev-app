@@ -1,6 +1,6 @@
 import '../global.css';
 import { StatusBar, useColorScheme } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GluestackUIProvider } from '../components/ui/gluestack-ui-provider';
 import { NavigationContainer } from './navigation';
 
@@ -11,9 +11,7 @@ function App() {
     <SafeAreaProvider>
       <GluestackUIProvider mode={isDarkMode ? 'dark' : 'light'}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <SafeAreaView className="flex-1 bg-background">
-          <NavigationContainer />
-        </SafeAreaView>
+        <NavigationContainer />
       </GluestackUIProvider>
     </SafeAreaProvider>
   );
