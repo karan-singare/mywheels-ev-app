@@ -1,0 +1,14 @@
+diff --git a/node_modules/expo-modules-core/ios/JS/JavaScriptActor.swift b/node_modules/expo-modules-core/ios/JS/JavaScriptActor.swift
+index 7c6c0fc..c3bdb0a 100644
+--- a/node_modules/expo-modules-core/ios/JS/JavaScriptActor.swift
++++ b/node_modules/expo-modules-core/ios/JS/JavaScriptActor.swift
+@@ -73,6 +73,8 @@ private final class JavaScriptSerialExecutor: SerialExecutor {
+    */
+   func isIsolatingCurrentContext() -> Bool? {
+     // We must be careful as it relies on the thread name given by React Native.
+-    return Thread.current.name == jsThreadName || !Thread.isMultiThreaded() || ProcessInfo.processInfo.processName == "xctest"
++    // Also allow the main thread to pass isolation checks, as the runtime may be
++    // set from the main thread during bridge setup (e.g. ExpoBridgeModule.setBridge:).
++    return Thread.current.name == jsThreadName || Thread.isMainThread || !Thread.isMultiThreaded() || ProcessInfo.processInfo.processName == "xctest"
+   }
+ }
