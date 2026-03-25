@@ -41,6 +41,17 @@
 	<string>MyWheels EV needs photo library access to upload your KYC documents.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>MyWheels EV needs permission to save photos.</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tez</string>
+		<string>phonepe</string>
+		<string>paytmmp</string>
+		<string>mobikwik</string>
+		<string>in.fampay.app</string>
+		<string>amazonpay</string>
+		<string>whatsapp</string>
+		<string>kotakbank</string>
+	</array>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
