@@ -10,6 +10,7 @@ import { PaymentHistoryScreen } from '../screens/rider/payment-history.screen';
 import { DashboardScreen } from '../screens/rider/dashboard.screen';
 import { ProfileScreen } from '../screens/rider/profile.screen';
 import { SupportScreen } from '../screens/rider/support.screen';
+import { KYCScreen } from '../screens/kyc/kyc.screen';
 
 type TabIconProps = Readonly<{ color: string; size: number }>;
 
@@ -75,6 +76,7 @@ export function RiderTabs() {
       <Stack.Screen name="RiderTabs" component={RiderTabsNavigator} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} />
+      <Stack.Screen name="KYC" component={KYCScreen} />
     </Stack.Navigator>
   );
 }
