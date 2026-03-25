@@ -1,6 +1,15 @@
 import React from 'react';
-import { View, Text, TextInput } from 'react-native';
 import { colors } from '../../config/theme.constant';
+import { Box } from '../../../components/ui/box';
+import { Text } from '../../../components/ui/text';
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlError,
+  FormControlErrorText,
+} from '../../../components/ui/form-control';
+import { Input, InputField } from '../../../components/ui/input';
 
 export interface PhoneInputProps {
   value: string;
@@ -23,18 +32,17 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
   };
 
   return (
-    <View className="mb-4">
-      <Text className="text-sm font-medium text-[#141c6c] mb-1.5">{label}</Text>
-      <View
-        className={`flex-row items-center rounded-xl border px-3 h-12 bg-white ${
-          error ? 'border-red-500' : 'border-gray-300'
-        }`}
-      >
-        <View className="mr-2 pr-2 border-r border-gray-300">
+    <FormControl isInvalid={!!error} className="mb-4">
+      <FormControlLabel>
+        <FormControlLabelText className="text-sm font-medium text-[#141c6c]">
+          {label}
+        </FormControlLabelText>
+      </FormControlLabel>
+      <Input className="rounded-xl h-12 bg-white">
+        <Box className="ml-3 mr-2 pr-2 border-r border-gray-300 justify-center">
           <Text className="text-base text-[#374151] font-medium">+91</Text>
-        </View>
-        <TextInput
-          className="flex-1 text-base text-[#141c6c]"
+        </Box>
+        <InputField
           value={value}
           onChangeText={handleChange}
           placeholder="Enter 10-digit number"
@@ -44,10 +52,10 @@ export const PhoneInput: React.FC<PhoneInputProps> = ({
           autoComplete="tel"
           testID="phone-input"
         />
-      </View>
-      {error ? (
-        <Text className="text-xs text-red-500 mt-1">{error}</Text>
-      ) : null}
-    </View>
+      </Input>
+      <FormControlError>
+        <FormControlErrorText>{error}</FormControlErrorText>
+      </FormControlError>
+    </FormControl>
   );
 };

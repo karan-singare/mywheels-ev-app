@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Eye, EyeOff } from 'lucide-react-native';
@@ -17,6 +8,24 @@ import { useAuth } from '../../hooks/use-auth.hook';
 import { isValidIndianPhone } from '../../utils/validators.util';
 import { colors } from '../../config/theme.constant';
 import type { AuthStackParamList } from '../../types/navigation.type';
+
+import { KeyboardAvoidingView } from '../../../components/ui/keyboard-avoiding-view';
+import { ScrollView } from '../../../components/ui/scroll-view';
+import { VStack } from '../../../components/ui/vstack';
+import { Heading } from '../../../components/ui/heading';
+import { Text } from '../../../components/ui/text';
+import { Button, ButtonText, ButtonSpinner } from '../../../components/ui/button';
+import { Pressable } from '../../../components/ui/pressable';
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlError,
+  FormControlErrorText,
+} from '../../../components/ui/form-control';
+import { Input, InputField, InputSlot } from '../../../components/ui/input';
+import { Alert, AlertText } from '../../../components/ui/alert';
+import { HStack } from '../../../components/ui/hstack';
 
 type LoginNavProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
@@ -64,11 +73,11 @@ export const LoginScreen: React.FC = () => {
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
       >
-        <View className="flex-1 justify-center px-6 py-12">
-          <Text className="text-3xl font-bold text-[#141c6c] mb-2">
+        <VStack className="flex-1 justify-center px-6 py-12" space="md">
+          <Heading size="3xl" className="text-[#141c6c] mb-2">
             Welcome Back
-          </Text>
-          <Text className="text-base text-[#6b7280] mb-8">
+          </Heading>
+          <Text size="md" className="text-[#6b7280] mb-8">
             Log in to your MyWheels EV account
           </Text>
 
@@ -81,17 +90,14 @@ export const LoginScreen: React.FC = () => {
             error={phoneError}
           />
 
-          <View className="mb-4">
-            <Text className="text-sm font-medium text-[#141c6c] mb-1.5">
-              Password
-            </Text>
-            <View
-              className={`flex-row items-center rounded-xl border px-3 h-12 bg-white ${
-                passwordError ? 'border-red-500' : 'border-gray-300'
-              }`}
-            >
-              <TextInput
-                className="flex-1 text-base text-[#141c6c]"
+          <FormControl isInvalid={!!passwordError} className="mb-4">
+            <FormControlLabel>
+              <FormControlLabelText className="text-sm font-medium text-[#141c6c]">
+                Password
+              </FormControlLabelText>
+            </FormControlLabel>
+            <Input className="rounded-xl h-12 bg-white">
+              <InputField
                 value={password}
                 onChangeText={(text) => {
                   setPassword(text);
@@ -103,9 +109,9 @@ export const LoginScreen: React.FC = () => {
                 autoComplete="password"
                 testID="password-input"
               />
-              <TouchableOpacity
+              <InputSlot
                 onPress={() => setShowPassword(!showPassword)}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                className="pr-3"
                 testID="toggle-password"
               >
                 {showPassword ? (
@@ -113,57 +119,64 @@ export const LoginScreen: React.FC = () => {
                 ) : (
                   <Eye size={20} color={colors.mutedLight} />
                 )}
-              </TouchableOpacity>
-            </View>
-            {passwordError ? (
-              <Text className="text-xs text-red-500 mt-1">{passwordError}</Text>
-            ) : null}
-          </View>
+              </InputSlot>
+            </Input>
+            <FormControlError>
+              <FormControlErrorText>{passwordError}</FormControlErrorText>
+            </FormControlError>
+          </FormControl>
 
           {error ? (
-            <View className="bg-red-50 rounded-xl p-3 mb-4">
-              <Text className="text-sm text-red-600">{error}</Text>
-            </View>
+            <Alert variant="destructive" className="rounded-xl mb-4">
+              <AlertText>{error}</AlertText>
+            </Alert>
           ) : null}
 
-          <TouchableOpacity
-            className={`h-12 rounded-xl items-center justify-center mt-2 ${
-              loading ? 'bg-[#184cba]/70' : 'bg-[#184cba]'
-            }`}
+          <Button
+            className="h-12 rounded-xl mt-2 bg-[#184cba]"
             onPress={handleLogin}
             disabled={loading}
-            activeOpacity={0.8}
             testID="login-button"
           >
             {loading ? (
-              <ActivityIndicator color="#fff" />
+              <ButtonSpinner color="#fff" />
             ) : (
-              <Text className="text-white text-base font-semibold">Log In</Text>
+              <ButtonText className="text-white text-base font-semibold">
+                Log In
+              </ButtonText>
             )}
-          </TouchableOpacity>
+          </Button>
 
-          <TouchableOpacity
+          <Pressable
             className="mt-6 items-center"
             onPress={() => navigation.navigate('Signup')}
             testID="go-to-signup"
           >
-            <Text className="text-sm text-[#6b7280]">
-              Don't have an account?{' '}
-              <Text className="text-[#184cba] font-semibold">Sign up</Text>
-            </Text>
-          </TouchableOpacity>
+            <HStack space="xs" className="items-center">
+              <Text size="sm" className="text-[#6b7280]">
+                Don't have an account?
+              </Text>
+              <Text size="sm" className="text-[#184cba] font-semibold">
+                Sign up
+              </Text>
+            </HStack>
+          </Pressable>
 
-          <TouchableOpacity
+          <Pressable
             className="mt-3 items-center"
             onPress={() => navigation.navigate('AdminLogin')}
             testID="go-to-admin-login"
           >
-            <Text className="text-sm text-[#6b7280]">
-              Admin?{' '}
-              <Text className="text-[#184cba] font-semibold">Log in here</Text>
-            </Text>
-          </TouchableOpacity>
-        </View>
+            <HStack space="xs" className="items-center">
+              <Text size="sm" className="text-[#6b7280]">
+                Admin?
+              </Text>
+              <Text size="sm" className="text-[#184cba] font-semibold">
+                Log in here
+              </Text>
+            </HStack>
+          </Pressable>
+        </VStack>
       </ScrollView>
     </KeyboardAvoidingView>
   );
