@@ -13,6 +13,7 @@ import { ProfileScreen } from '../screens/rider/profile.screen';
 import { SupportScreen } from '../screens/rider/support.screen';
 import { SettingsScreen } from '../screens/rider/settings.screen';
 import { KYCScreen } from '../screens/kyc/kyc.screen';
+import { ImageViewerScreen } from '../screens/shared/image-viewer.screen';
 
 type TabIconProps = Readonly<{ color: string; size: number }>;
 
@@ -67,6 +68,7 @@ export function RiderTabs() {
       <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
       <Stack.Screen name="KYC" component={KYCScreen} options={{ title: 'KYC Verification' }} />
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'My Profile' }} />
+      <Stack.Screen name="ImageViewer" component={ImageViewerScreen} options={{ presentation: 'fullScreenModal', headerShown: false }} />
     </Stack.Navigator>
   );
 }

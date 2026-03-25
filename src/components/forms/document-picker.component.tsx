@@ -12,11 +12,17 @@ import { Camera, ImageIcon, X } from 'lucide-react-native';
 import { colors } from '../../config/theme.constant';
 import { isValidFileSize, isValidImageType } from '../../utils/validators.util';
 
+export interface DocumentPickerResult {
+  uri: string;
+  base64: string;
+  mimeType: string;
+}
+
 export interface DocumentPickerProps {
   label: string;
   documentType: 'aadhaar' | 'driving_license' | 'photo' | 'address_proof';
   imageUri?: string;
-  onImageSelected: (uris: string[]) => void;
+  onImageSelected: (results: DocumentPickerResult[]) => void;
   onRemove: () => void;
   uploading?: boolean;
   error?: string;
@@ -53,7 +59,8 @@ export const DocumentPicker: React.FC<DocumentPickerProps> = ({
           maxWidth: 1200,
           maxHeight: 1200,
           quality: 0.8 as const,
-          selectionLimit: source === 'gallery' ? 0 : 1, // 0 = unlimited for gallery
+          includeBase64: true,
+          selectionLimit: source === 'gallery' ? 0 : 1,
         };
 
         const launcher =
@@ -65,25 +72,27 @@ export const DocumentPicker: React.FC<DocumentPickerProps> = ({
 
         if (result.didCancel || !result.assets?.length) return;
 
-        const validUris: string[] = [];
+        const validResults: DocumentPickerResult[] = [];
 
         for (const asset of result.assets) {
           const mimeType = asset.type ?? '';
           const fileSize = asset.fileSize ?? 0;
 
           if (!isValidImageType(mimeType)) {
-            Alert.alert('Invalid Format', `${asset.fileName ?? 'A file'} is not JPEG or PNG and was skipped.`);
+            Alert.alert('Invalid Format', `${asset.fileName ?? 'A file'} is not a supported image type and was skipped.`);
             continue;
           }
           if (!isValidFileSize(fileSize, MAX_FILE_SIZE_MB)) {
             Alert.alert('File Too Large', `${asset.fileName ?? 'A file'} exceeds ${MAX_FILE_SIZE_MB} MB and was skipped.`);
             continue;
           }
-          if (asset.uri) validUris.push(asset.uri);
+          if (asset.uri && asset.base64) {
+            validResults.push({ uri: asset.uri, base64: asset.base64, mimeType });
+          }
         }
 
-        if (validUris.length > 0) {
-          onImageSelected(validUris);
+        if (validResults.length > 0) {
+          onImageSelected(validResults);
         }
       } catch {
         Alert.alert('Error', 'Failed to pick image. Please try again.');

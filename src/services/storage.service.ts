@@ -1,21 +1,17 @@
 import { supabase } from '../config/supabase.constant';
+import { decode } from 'base64-arraybuffer';
 
-export async function uploadImage(
+export async function uploadImageBase64(
   bucket: string,
   path: string,
-  fileUri: string,
+  base64: string,
+  contentType: string,
 ): Promise<string> {
-  console.log('[storage] uploadImage start', { bucket, path, fileUri: fileUri.substring(0, 80) });
-
-  const response = await fetch(fileUri);
-  console.log('[storage] fetch response status:', response.status, 'ok:', response.ok);
-
-  const blob = await response.blob();
-  console.log('[storage] blob size:', blob.size, 'type:', blob.type);
+  console.log('[storage] uploadImageBase64 start', { bucket, path, base64Length: base64.length, contentType });
 
   const { data, error } = await supabase.storage
     .from(bucket)
-    .upload(path, blob, { upsert: true, contentType: blob.type || 'image/jpeg' });
+    .upload(path, decode(base64), { upsert: true, contentType });
 
   if (error) {
     console.error('[storage] upload error:', error);
@@ -27,7 +23,6 @@ export async function uploadImage(
     .from(bucket)
     .getPublicUrl(path);
 
-  console.log('[storage] publicUrl:', urlData.publicUrl);
   return urlData.publicUrl;
 }
 
@@ -35,12 +30,11 @@ export async function getSignedUrl(
   bucket: string,
   path: string,
 ): Promise<string> {
-  console.log('[storage] getSignedUrl', { bucket, path });
   const { data, error } = await supabase.storage
     .from(bucket)
     .createSignedUrl(path, 3600);
   if (error) {
-    console.error('[storage] signedUrl error:', error);
+    console.warn('[storage] signedUrl not found:', path);
     throw new Error(`Failed to get signed URL: ${error.message}`);
   }
   return data.signedUrl;

@@ -2,17 +2,18 @@ import { supabase } from '../config/supabase.constant';
 import type { KYCDocument, KYCReviewItem } from '../types/kyc.type';
 import type { KYCDocumentType } from '../enums/kyc-document-type.enum';
 import type { KYCStatus } from '../enums/kyc-status.enum';
-import { uploadImage, getSignedUrl } from './storage.service';
+import { uploadImageBase64, getSignedUrl } from './storage.service';
 
 const KYC_BUCKET = 'kyc-documents';
 
 export async function uploadDocument(
   riderId: string,
   type: KYCDocumentType,
-  fileUri: string,
+  base64: string,
+  mimeType: string,
 ): Promise<KYCDocument> {
   const filePath = `${riderId}/${type}_${Date.now()}`;
-  await uploadImage(KYC_BUCKET, filePath, fileUri);
+  await uploadImageBase64(KYC_BUCKET, filePath, base64, mimeType);
   const fileUrl = await getSignedUrl(KYC_BUCKET, filePath);
 
   const { data, error } = await supabase
@@ -36,11 +37,18 @@ export async function getDocuments(
 
   const docs = await Promise.all(
     (data as KYCDocument[]).map(async (doc) => {
-      const fileUrl = await getSignedUrl(KYC_BUCKET, doc.file_path);
-      return { ...doc, file_url: fileUrl };
+      try {
+        const fileUrl = await getSignedUrl(KYC_BUCKET, doc.file_path);
+        return { ...doc, file_url: fileUrl };
+      } catch {
+        // File missing from storage — return doc without URL
+        console.warn('[kyc] signed URL failed for', doc.file_path, '— skipping');
+        return { ...doc, file_url: '' };
+      }
     }),
   );
-  return docs;
+  // Filter out docs with no URL (orphaned DB records)
+  return docs.filter((d) => d.file_url !== '');
 }
 
 export async function getKYCStatus(

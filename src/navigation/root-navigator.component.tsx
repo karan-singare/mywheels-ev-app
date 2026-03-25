@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { useAuth } from '../hooks/use-auth.hook';
-import { useAppDispatch } from '../store';
+import { useAppDispatch, useAppSelector } from '../store';
 import { restoreSession, subscribeToAuthChanges } from '../store/thunks/auth.thunk';
 import { fetchProfile } from '../store/thunks/rider.thunk';
+import { fetchDocuments } from '../store/thunks/kyc.thunk';
 import { AuthStack } from './auth-stack.component';
 import { RiderTabs } from './rider-tabs.component';
 import { AdminTabs } from './admin-tabs.component';
@@ -25,6 +26,7 @@ function getAuthState(
 export function RootNavigator() {
   const dispatch = useAppDispatch();
   const { session, user, role, loading } = useAuth();
+  const riderProfileId = useAppSelector((s) => s.rider.profile?.id);
 
   useEffect(() => {
     dispatch(restoreSession());
@@ -39,6 +41,13 @@ export function RootNavigator() {
       dispatch(fetchProfile(user.id as string));
     }
   }, [dispatch, session, user?.id, role]);
+
+  // Fetch KYC status + documents once rider profile is loaded
+  useEffect(() => {
+    if (riderProfileId) {
+      dispatch(fetchDocuments(riderProfileId));
+    }
+  }, [dispatch, riderProfileId]);
 
   const authState = getAuthState(loading, session, role);
 

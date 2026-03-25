@@ -18,12 +18,12 @@ export const fetchDocuments = createAsyncThunk(
 export const uploadDocument = createAsyncThunk(
   'kyc/uploadDocument',
   async (
-    { riderId, type, fileUri }: { riderId: string; type: KYCDocumentType; fileUri: string },
+    { riderId, type, base64, mimeType }: { riderId: string; type: KYCDocumentType; base64: string; mimeType: string },
     { rejectWithValue },
   ) => {
     try {
-      console.log('[kyc/uploadDocument] start', { riderId, type, fileUri: fileUri.substring(0, 80) });
-      const document = await kycService.uploadDocument(riderId, type, fileUri);
+      console.log('[kyc/uploadDocument] start', { riderId, type, base64Length: base64.length, mimeType });
+      const document = await kycService.uploadDocument(riderId, type, base64, mimeType);
       console.log('[kyc/uploadDocument] success', document);
       return document;
     } catch (error) {
@@ -37,8 +37,11 @@ export const submitForReview = createAsyncThunk(
   'kyc/submitForReview',
   async (riderId: string, { rejectWithValue }) => {
     try {
+      console.log('[kyc/submitForReview] start', { riderId });
       await kycService.submitForReview(riderId);
+      console.log('[kyc/submitForReview] success');
     } catch (error) {
+      console.error('[kyc/submitForReview] error', error);
       return rejectWithValue((error as Error).message);
     }
   },

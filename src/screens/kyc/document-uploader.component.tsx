@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { X } from 'lucide-react-native';
-import { DocumentPicker } from '../../components/forms/document-picker.component';
+import { DocumentPicker, type DocumentPickerResult } from '../../components/forms/document-picker.component';
 import { colors } from '../../config/theme.constant';
 import type { KYCDocumentType } from '../../enums/kyc-document-type.enum';
 import type { KYCDocument } from '../../types/kyc.type';
@@ -26,7 +26,7 @@ export interface UploadState {
 interface DocumentUploaderProps {
   documents: KYCDocument[];
   uploadState: UploadState;
-  onUpload: (type: KYCDocumentType, uris: string[]) => void;
+  onUpload: (type: KYCDocumentType, results: DocumentPickerResult[]) => void;
   onRemove: (type: KYCDocumentType, docId?: string) => void;
 }
 
@@ -113,7 +113,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
             <DocumentPicker
               label={docs.length > 0 ? `Add more ${slot.label}` : slot.label}
               documentType={slot.type}
-              onImageSelected={(uris) => onUpload(slot.type, uris)}
+              onImageSelected={(results) => onUpload(slot.type, results)}
               onRemove={() => onRemove(slot.type)}
               uploading={isUploading}
               error={errorMsg}

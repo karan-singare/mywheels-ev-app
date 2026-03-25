@@ -1,20 +1,15 @@
 import React, { useMemo } from 'react';
 import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import type { CompositeNavigationProp } from '@react-navigation/native';
-import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useRider } from '../../hooks/use-rider.hook';
 import { useKYC } from '../../hooks/use-kyc.hook';
 import { colors } from '../../config/theme.constant';
 import { formatDate } from '../../utils/formatters.util';
-import type { RiderTabParamList, RiderStackParamList } from '../../types/navigation.type';
+import type { RiderStackParamList } from '../../types/navigation.type';
 import type { RiderProfile as RiderProfileType } from '../../types/rider.type';
 
-type ProfileNav = CompositeNavigationProp<
-  BottomTabNavigationProp<RiderTabParamList, 'Profile'>,
-  NativeStackNavigationProp<RiderStackParamList>
->;
+type ProfileNav = NativeStackNavigationProp<RiderStackParamList, 'Profile'>;
 
 const PROFILE_FIELDS: (keyof RiderProfileType)[] = [
   'full_name',
@@ -165,7 +160,7 @@ export function ProfileScreen() {
       {/* Action buttons */}
       <TouchableOpacity
         testID="edit-profile-button"
-        onPress={() => navigation.getParent()?.navigate('Onboarding')}
+        onPress={() => navigation.navigate('Onboarding')}
         style={{
           backgroundColor: colors.primary,
           paddingVertical: 14,
@@ -177,9 +172,32 @@ export function ProfileScreen() {
         <Text style={{ color: '#fff', fontWeight: '600', fontSize: 15 }}>Edit Profile</Text>
       </TouchableOpacity>
 
+      {/* KYC status message */}
+      {kycStatus === 'under_review' && (
+        <View style={{ backgroundColor: '#dbeafe', borderRadius: 8, padding: 12, marginBottom: 12 }}>
+          <Text style={{ color: '#1e40af', fontSize: 13, fontWeight: '500' }}>
+            KYC approval is pending. We'll notify you once the review is complete.
+          </Text>
+        </View>
+      )}
+      {kycStatus === 'rejected' && (
+        <View style={{ backgroundColor: '#fee2e2', borderRadius: 8, padding: 12, marginBottom: 12 }}>
+          <Text style={{ color: '#991b1b', fontSize: 13, fontWeight: '500' }}>
+            Your KYC was rejected. Please update your documents and resubmit.
+          </Text>
+        </View>
+      )}
+      {kycStatus === 'approved' && (
+        <View style={{ backgroundColor: '#dcfce7', borderRadius: 8, padding: 12, marginBottom: 12 }}>
+          <Text style={{ color: '#166534', fontSize: 13, fontWeight: '500' }}>
+            Your KYC is approved. You can now browse rental plans.
+          </Text>
+        </View>
+      )}
+
       <TouchableOpacity
         testID="kyc-verification-button"
-        onPress={() => navigation.getParent()?.navigate('KYC')}
+        onPress={() => navigation.navigate('KYC')}
         style={{
           backgroundColor: colors.teal,
           paddingVertical: 14,
@@ -188,7 +206,11 @@ export function ProfileScreen() {
           marginBottom: 12,
         }}
       >
-        <Text style={{ color: '#fff', fontWeight: '600', fontSize: 15 }}>KYC Verification</Text>
+        <Text style={{ color: '#fff', fontWeight: '600', fontSize: 15 }}>
+          {kycStatus === 'not_started' ? 'Start KYC Verification' :
+           kycStatus === 'approved' ? 'View KYC Documents' :
+           'Update KYC Documents'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );

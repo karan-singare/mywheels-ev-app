@@ -29,10 +29,13 @@ export type RiderStackParamList = {
   Onboarding: undefined;
   KYC: undefined;
   Profile: undefined;
+  ImageViewer: { imageUrls: string[]; initialIndex: number };
 };
 
 export type AdminStackParamList = {
   AdminTabs: undefined;
+  RejectKYC: { riderId: string; riderName: string };
+  ImageViewer: { imageUrls: string[]; initialIndex: number };
 };
 
 export type RootStackParamList = {

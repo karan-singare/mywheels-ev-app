@@ -4,22 +4,111 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TextInput,
-  Modal,
+  Image,
+  FlatList,
+  Dimensions,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAppSelector, useAppDispatch } from '../../store';
-import { fetchPendingReviews, approveKYC, rejectKYC } from '../../store/thunks/kyc.thunk';
+import { fetchPendingReviews, approveKYC } from '../../store/thunks/kyc.thunk';
+import * as kycService from '../../services/kyc.service';
 import { useAuth } from '../../hooks/use-auth.hook';
 import { colors } from '../../config/theme.constant';
-import type { KYCReviewItem } from '../../types/kyc.type';
+import type { KYCReviewItem, KYCDocument } from '../../types/kyc.type';
+import type { AdminStackParamList } from '../../types/navigation.type';
+
+type Nav = NativeStackNavigationProp<AdminStackParamList>;
+const CARD_PADDING = 14;
+const CARD_MARGIN = 16;
+const THUMB_WIDTH = Dimensions.get('window').width - (CARD_MARGIN * 2) - (CARD_PADDING * 2);
+
+function DocCarousel({
+  riderId,
+  onImagePress,
+}: Readonly<{
+  riderId: string;
+  onImagePress: (urls: string[], index: number) => void;
+}>) {
+  const [docs, setDocs] = useState<KYCDocument[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    kycService.getDocuments(riderId).then((d) => {
+      setDocs(d);
+      setLoading(false);
+    }).catch(() => setLoading(false));
+  }, [riderId]);
+
+  if (loading) {
+    return (
+      <View style={{ height: 160, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="small" color={colors.primary} />
+      </View>
+    );
+  }
+
+  if (docs.length === 0) {
+    return (
+      <View style={{ height: 80, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f3f4f6', borderRadius: 8 }}>
+        <Text style={{ fontSize: 13, color: colors.mutedLight }}>No documents uploaded</Text>
+      </View>
+    );
+  }
+
+  const imageUrls = docs.map((d) => d.file_url);
+
+  return (
+    <View>
+      <FlatList
+        data={docs}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={(e) => {
+          setActiveIndex(Math.round(e.nativeEvent.contentOffset.x / THUMB_WIDTH));
+        }}
+        keyExtractor={(d) => d.id}
+        renderItem={({ item, index }) => (
+          <TouchableOpacity activeOpacity={0.9} onPress={() => onImagePress(imageUrls, index)}>
+            <Image
+              source={{ uri: item.file_url }}
+              style={{ width: THUMB_WIDTH, height: 180, borderRadius: 8 }}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
+        )}
+      />
+      {docs.length > 1 && (
+        <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 8 }}>
+          {docs.map((_, i) => (
+            <View
+              key={docs[i].id}
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: 3,
+                backgroundColor: i === activeIndex ? colors.primary : '#d1d5db',
+              }}
+            />
+          ))}
+        </View>
+      )}
+      <Text style={{ fontSize: 11, color: colors.mutedLight, marginTop: 4, textTransform: 'capitalize' }}>
+        {docs[activeIndex]?.document_type.replace('_', ' ') ?? ''}
+      </Text>
+    </View>
+  );
+}
 
 export function KYCReviewScreen() {
+  const navigation = useNavigation<Nav>();
   const dispatch = useAppDispatch();
   const { user } = useAuth();
   const { pendingReviews, loading, error } = useAppSelector((s) => s.kyc);
-  const [rejectTarget, setRejectTarget] = useState<KYCReviewItem | null>(null);
-  const [rejectReason, setRejectReason] = useState('');
 
   useEffect(() => {
     dispatch(fetchPendingReviews());
@@ -28,19 +117,29 @@ export function KYCReviewScreen() {
   const handleApprove = useCallback(
     (item: KYCReviewItem) => {
       if (!user?.id) return;
-      dispatch(approveKYC({ riderId: item.rider_id, adminId: user.id }));
+      Alert.alert(
+        'Approve KYC',
+        `Approve ${item.rider_name}'s KYC verification?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Approve',
+            onPress: () => { dispatch(approveKYC({ riderId: item.rider_id, adminId: user.id as string })); },
+          },
+        ],
+      );
     },
     [dispatch, user?.id],
   );
 
-  const handleReject = useCallback(() => {
-    if (!rejectTarget || !user?.id || !rejectReason.trim()) return;
-    dispatch(rejectKYC({ riderId: rejectTarget.rider_id, adminId: user.id, reason: rejectReason.trim() }));
-    setRejectTarget(null);
-    setRejectReason('');
-  }, [dispatch, rejectTarget, user?.id, rejectReason]);
+  const handleImagePress = useCallback(
+    (imageUrls: string[], initialIndex: number) => {
+      navigation.navigate('ImageViewer', { imageUrls, initialIndex });
+    },
+    [navigation],
+  );
 
-  if (loading) {
+  if (loading && pendingReviews.length === 0) {
     return (
       <View testID="kyc-review-loading" style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg }}>
         <ActivityIndicator size="large" color={colors.primary} />
@@ -50,20 +149,20 @@ export function KYCReviewScreen() {
 
   return (
     <View testID="kyc-review-screen" style={{ flex: 1, backgroundColor: colors.bg }}>
-      <View style={{ padding: 16, paddingBottom: 0 }}>
-        <Text style={{ fontSize: 22, fontWeight: '700', color: colors.textMain, marginBottom: 4 }}>KYC Review</Text>
-        <Text style={{ fontSize: 13, color: colors.mutedLight, marginBottom: 12 }}>
+      <View style={{ paddingHorizontal: CARD_MARGIN, paddingTop: 16, paddingBottom: 8 }}>
+        <Text style={{ fontSize: 22, fontWeight: '700', color: colors.textMain }}>KYC Review</Text>
+        <Text style={{ fontSize: 13, color: colors.mutedLight, marginTop: 2 }}>
           {pendingReviews.length} pending review{pendingReviews.length !== 1 ? 's' : ''}
         </Text>
       </View>
 
       {error && (
-        <View style={{ paddingHorizontal: 16, marginBottom: 8 }}>
+        <View style={{ paddingHorizontal: CARD_MARGIN, marginBottom: 8 }}>
           <Text style={{ color: '#ef4444', fontSize: 13 }}>{error}</Text>
         </View>
       )}
 
-      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 0 }}>
+      <ScrollView contentContainerStyle={{ paddingHorizontal: CARD_MARGIN, paddingBottom: 24 }}>
         {pendingReviews.length === 0 ? (
           <Text style={{ textAlign: 'center', color: colors.mutedLight, marginTop: 32 }}>No pending reviews</Text>
         ) : (
@@ -74,8 +173,8 @@ export function KYCReviewScreen() {
               style={{
                 backgroundColor: colors.card,
                 borderRadius: 12,
-                padding: 14,
-                marginBottom: 10,
+                padding: CARD_PADDING,
+                marginBottom: 12,
                 shadowColor: '#000',
                 shadowOpacity: 0.05,
                 shadowRadius: 4,
@@ -83,14 +182,18 @@ export function KYCReviewScreen() {
                 elevation: 2,
               }}
             >
-              <Text style={{ fontSize: 15, fontWeight: '700', color: colors.textMain, marginBottom: 4 }}>
-                {item.rider_name}
-              </Text>
-              <Text style={{ fontSize: 12, color: colors.muted, marginBottom: 2 }}>Phone: {item.rider_phone}</Text>
-              <Text style={{ fontSize: 12, color: colors.muted, marginBottom: 8 }}>
-                Submitted: {new Date(item.submitted_at).toLocaleDateString()}
-              </Text>
-              <View style={{ flexDirection: 'row', gap: 8 }}>
+              <DocCarousel riderId={item.rider_id} onImagePress={handleImagePress} />
+
+              <View style={{ marginTop: 10 }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: colors.textMain }}>
+                  {item.rider_name || 'Unknown Rider'}
+                </Text>
+                <Text style={{ fontSize: 12, color: colors.muted, marginTop: 2 }}>
+                  {item.rider_phone} · Submitted {new Date(item.submitted_at).toLocaleDateString()}
+                </Text>
+              </View>
+
+              <View style={{ flexDirection: 'row', gap: 8, marginTop: 12 }}>
                 <TouchableOpacity
                   testID={`approve-btn-${item.rider_id}`}
                   onPress={() => handleApprove(item)}
@@ -100,7 +203,7 @@ export function KYCReviewScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   testID={`reject-btn-${item.rider_id}`}
-                  onPress={() => { setRejectTarget(item); setRejectReason(''); }}
+                  onPress={() => navigation.navigate('RejectKYC', { riderId: item.rider_id, riderName: item.rider_name })}
                   style={{ flex: 1, backgroundColor: '#ef4444', paddingVertical: 10, borderRadius: 8, alignItems: 'center' }}
                 >
                   <Text style={{ color: '#fff', fontWeight: '600', fontSize: 13 }}>Reject</Text>
@@ -110,46 +213,6 @@ export function KYCReviewScreen() {
           ))
         )}
       </ScrollView>
-
-      {/* Reject reason modal */}
-      <Modal visible={rejectTarget != null} transparent animationType="slide">
-        <View style={{ flex: 1, justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.5)', padding: 24 }}>
-          <View style={{ backgroundColor: colors.card, borderRadius: 16, padding: 20 }}>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: colors.textMain, marginBottom: 4 }}>Reject KYC</Text>
-            <Text style={{ fontSize: 13, color: colors.muted, marginBottom: 12 }}>
-              Provide a reason for rejecting {rejectTarget?.rider_name}'s KYC
-            </Text>
-            <TextInput
-              testID="reject-reason-input"
-              placeholder="Rejection reason"
-              placeholderTextColor={colors.mutedLight}
-              value={rejectReason}
-              onChangeText={setRejectReason}
-              multiline
-              numberOfLines={3}
-              style={{
-                borderWidth: 1,
-                borderColor: '#e5e7eb',
-                borderRadius: 8,
-                padding: 10,
-                marginBottom: 16,
-                fontSize: 14,
-                color: colors.textMain,
-                minHeight: 80,
-                textAlignVertical: 'top',
-              }}
-            />
-            <View style={{ flexDirection: 'row', gap: 8 }}>
-              <TouchableOpacity onPress={() => setRejectTarget(null)} style={{ flex: 1, padding: 12, borderRadius: 8, backgroundColor: '#e5e7eb', alignItems: 'center' }}>
-                <Text style={{ color: colors.muted, fontWeight: '600' }}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity testID="confirm-reject" onPress={handleReject} style={{ flex: 1, padding: 12, borderRadius: 8, backgroundColor: '#ef4444', alignItems: 'center' }}>
-                <Text style={{ color: '#fff', fontWeight: '600' }}>Reject</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
