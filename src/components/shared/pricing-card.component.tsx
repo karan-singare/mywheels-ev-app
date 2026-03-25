@@ -33,7 +33,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
     <View
       className={`rounded-2xl p-6 ${
         featured
-          ? 'bg-[#184cba] scale-105'
+          ? 'bg-[#184cba]'
           : 'bg-white border border-gray-200'
       }`}
     >
@@ -109,14 +109,14 @@ export const PricingCard: React.FC<PricingCardProps> = ({
             : 'bg-[#184cba]'
         }`}
         accessibilityRole="button"
-        accessibilityLabel={`Get Started with ${title}`}
+        accessibilityLabel={`Select ${title}`}
       >
         <Text
           className={`font-semibold text-sm ${
             featured ? 'text-[#141c6c]' : 'text-white'
           }`}
         >
-          Get Started
+          Select Plan
         </Text>
       </TouchableOpacity>
     </View>

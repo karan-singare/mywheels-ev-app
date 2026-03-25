@@ -6,9 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { ArrowLeft, CreditCard, Smartphone, Building2, Banknote, AlertCircle } from 'lucide-react-native';
+import { CreditCard, Smartphone, Building2, Banknote, AlertCircle } from 'lucide-react-native';
 import { useAuth } from '../../hooks/use-auth.hook';
 import { usePayments } from '../../hooks/use-payments.hook';
 import { RENTAL_PLANS } from '../../constants/plans.constant';
@@ -91,28 +90,14 @@ export function PaymentScreen() {
 
   if (!plan) {
     return (
-      <SafeAreaView className="flex-1 bg-[#f8fafc] justify-center items-center">
+      <View className="flex-1 bg-[#f8fafc] justify-center items-center">
         <Text className="text-base text-[#6b7280]">Plan not found.</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-[#f8fafc]" testID="payment-screen">
-      {/* Header */}
-      <View className="flex-row items-center px-5 py-4 bg-white border-b border-[#e5e7eb]">
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          testID="payment-back-button"
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          className="mr-4"
-        >
-          <ArrowLeft color={colors.textMain} size={24} />
-        </TouchableOpacity>
-        <Text className="text-xl font-bold text-[#141c6c]">Payment</Text>
-      </View>
-
+    <View className="flex-1 bg-[#f8fafc]" testID="payment-screen">
       <ScrollView
         contentContainerClassName="px-5 py-6 pb-10"
         testID="payment-scroll"
@@ -237,7 +222,7 @@ export function PaymentScreen() {
           )}
         </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
