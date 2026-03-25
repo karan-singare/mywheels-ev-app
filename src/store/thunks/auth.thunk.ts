@@ -19,6 +19,7 @@ export const signIn = createAsyncThunk(
         role: 'rider' as const,
       };
     } catch (error) {
+      console.error('[auth/signIn]', error);
       return rejectWithValue((error as Error).message);
     }
   },
@@ -37,6 +38,7 @@ export const signUp = createAsyncThunk(
         user: response.data.user,
       };
     } catch (error) {
+      console.error('[auth/signUp]', error);
       return rejectWithValue((error as Error).message);
     }
   },
@@ -56,6 +58,7 @@ export const adminSignIn = createAsyncThunk(
         role: 'admin' as const,
       };
     } catch (error) {
+      console.error('[auth/adminSignIn]', error);
       return rejectWithValue((error as Error).message);
     }
   },
@@ -68,6 +71,7 @@ export const signOut = createAsyncThunk(
       await authService.signOut();
       clearPersistedState();
     } catch (error) {
+      console.error('[auth/signOut]', error);
       return rejectWithValue((error as Error).message);
     }
   },
@@ -98,6 +102,7 @@ export const restoreSession = createAsyncThunk(
         role: roleData.role as 'rider' | 'admin',
       };
     } catch (error) {
+      console.error('[auth/restoreSession]', error);
       return rejectWithValue((error as Error).message);
     }
   },

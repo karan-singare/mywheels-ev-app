@@ -10,7 +10,6 @@ import { useNavigation } from '@react-navigation/native';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useAuth } from '../../hooks/use-auth.hook';
 import { useRider } from '../../hooks/use-rider.hook';
 import { useRentals } from '../../hooks/use-rentals.hook';
 import { useVehicles } from '../../hooks/use-vehicles.hook';
@@ -91,17 +90,16 @@ function KYCStatusBadge({ status }: Readonly<{ status: string }>) {
 
 export function DashboardScreen() {
   const navigation = useNavigation<DashboardNav>();
-  const { user } = useAuth();
   const { profile, loading: riderLoading } = useRider();
   const { activeRental, loading: rentalLoading, fetchActiveRental } = useRentals();
   const { currentVehicle, fetchVehicle } = useVehicles();
   const { status: kycStatus } = useKYC();
 
   useEffect(() => {
-    if (user?.id) {
-      fetchActiveRental(user.id);
+    if (profile?.id) {
+      fetchActiveRental(profile.id);
     }
-  }, [user?.id, fetchActiveRental]);
+  }, [profile?.id, fetchActiveRental]);
 
   useEffect(() => {
     if (activeRental?.vehicle_id) {

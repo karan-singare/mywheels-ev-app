@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useAppSelector, useAppDispatch } from '../store';
 import {
   fetchActiveRental,
@@ -16,10 +17,22 @@ export function useRentals() {
     allActive,
     loading,
     error,
-    fetchActiveRental: (riderId: string) => dispatch(fetchActiveRental(riderId)),
-    fetchHistory: (riderId: string) => dispatch(fetchHistory(riderId)),
-    createRental: (riderId: string, planId: string, vehicleId: string) =>
-      dispatch(createRental({ riderId, planId, vehicleId })),
-    fetchAllActive: () => dispatch(fetchAllActive()),
+    fetchActiveRental: useCallback(
+      (riderId: string) => dispatch(fetchActiveRental(riderId)),
+      [dispatch],
+    ),
+    fetchHistory: useCallback(
+      (riderId: string) => dispatch(fetchHistory(riderId)),
+      [dispatch],
+    ),
+    createRental: useCallback(
+      (riderId: string, planId: string, vehicleId: string) =>
+        dispatch(createRental({ riderId, planId, vehicleId })),
+      [dispatch],
+    ),
+    fetchAllActive: useCallback(
+      () => dispatch(fetchAllActive()),
+      [dispatch],
+    ),
   };
 }

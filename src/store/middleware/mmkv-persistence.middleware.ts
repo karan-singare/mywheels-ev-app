@@ -54,6 +54,6 @@ export function getPersistedState(): Record<string, unknown> {
  */
 export function clearPersistedState(): void {
   for (const key of PERSISTED_SLICES) {
-    getStorage().delete(`redux_${key}`);
+    getStorage().remove(`redux_${key}`);
   }
 }
