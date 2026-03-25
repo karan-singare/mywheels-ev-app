@@ -1,7 +1,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, CreditCard, User, MessageCircle } from 'lucide-react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Home, CreditCard, MessageCircle, Settings } from 'lucide-react-native';
 import { RiderTabParamList, RiderStackParamList } from '../types/navigation.type';
 import { colors } from '../config/theme.constant';
 import { PlansScreen } from '../screens/rider/plans.screen';
@@ -10,6 +11,7 @@ import { PaymentHistoryScreen } from '../screens/rider/payment-history.screen';
 import { DashboardScreen } from '../screens/rider/dashboard.screen';
 import { ProfileScreen } from '../screens/rider/profile.screen';
 import { SupportScreen } from '../screens/rider/support.screen';
+import { SettingsScreen } from '../screens/rider/settings.screen';
 import { KYCScreen } from '../screens/kyc/kyc.screen';
 
 type TabIconProps = Readonly<{ color: string; size: number }>;
@@ -22,12 +24,12 @@ function PlansIcon({ color, size }: TabIconProps) {
   return <CreditCard color={color} size={size} />;
 }
 
-function ProfileIcon({ color, size }: TabIconProps) {
-  return <User color={color} size={size} />;
-}
-
 function SupportIcon({ color, size }: TabIconProps) {
   return <MessageCircle color={color} size={size} />;
+}
+
+function SettingsIcon({ color, size }: TabIconProps) {
+  return <Settings color={color} size={size} />;
 }
 
 const Tab = createBottomTabNavigator<RiderTabParamList>();
@@ -35,7 +37,8 @@ const Stack = createNativeStackNavigator<RiderStackParamList>();
 
 function RiderTabsNavigator() {
   return (
-    <Tab.Navigator
+    <SafeAreaView style={{ flex: 1 }} edges={['top']}>
+      <Tab.Navigator
       screenOptions={{
         headerShown: false,
         animation: 'fade',
@@ -47,38 +50,23 @@ function RiderTabsNavigator() {
         },
       }}
     >
-      <Tab.Screen
-        name="Home"
-        component={DashboardScreen}
-        options={{ tabBarIcon: HomeIcon }}
-      />
-      <Tab.Screen
-        name="Plans"
-        component={PlansScreen}
-        options={{ tabBarIcon: PlansIcon }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ tabBarIcon: ProfileIcon }}
-      />
-      <Tab.Screen
-        name="Support"
-        component={SupportScreen}
-        options={{ tabBarIcon: SupportIcon }}
-      />
+      <Tab.Screen name="Home" component={DashboardScreen} options={{ tabBarIcon: HomeIcon }} />
+      <Tab.Screen name="Plans" component={PlansScreen} options={{ tabBarIcon: PlansIcon }} />
+      <Tab.Screen name="Support" component={SupportScreen} options={{ tabBarIcon: SupportIcon }} />
+      <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarIcon: SettingsIcon }} />
     </Tab.Navigator>
+    </SafeAreaView>
   );
 }
 
 export function RiderTabs() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200 }}>
-      <Stack.Screen name="RiderTabs" component={RiderTabsNavigator} />
-      <Stack.Screen name="Payment" component={PaymentScreen} />
-      <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} />
-      <Stack.Screen name="KYC" component={KYCScreen} />
+    <Stack.Navigator screenOptions={{ animation: 'slide_from_right', animationDuration: 200, headerBackTitle: 'Back' }}>
+      <Stack.Screen name="RiderTabs" component={RiderTabsNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Payment" component={PaymentScreen} options={{ title: 'Payment' }} />
+      <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} options={{ title: 'Payment History' }} />
+      <Stack.Screen name="KYC" component={KYCScreen} options={{ title: 'KYC Verification' }} />
+      <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'My Profile' }} />
     </Stack.Navigator>
   );
 }
-

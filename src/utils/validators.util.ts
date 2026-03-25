@@ -5,7 +5,7 @@
  */
 
 const INDIAN_PHONE_REGEX = /^[6-9]\d{9}$/;
-const VALID_IMAGE_TYPES = new Set(['image/jpeg', 'image/png']);
+const VALID_IMAGE_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif']);
 
 /**
  * Validates an Indian 10-digit mobile number.

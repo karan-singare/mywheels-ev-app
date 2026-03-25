@@ -13,7 +13,7 @@ export default function App() {
     <SafeAreaProvider>
       <Provider store={store}>
         <GluestackUIProvider>
-          <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
+          <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
             <StatusBar barStyle="dark-content" backgroundColor="#f8fafc" />
             <NavigationContainer>
               <RootNavigator />

@@ -22,9 +22,12 @@ export const uploadDocument = createAsyncThunk(
     { rejectWithValue },
   ) => {
     try {
+      console.log('[kyc/uploadDocument] start', { riderId, type, fileUri: fileUri.substring(0, 80) });
       const document = await kycService.uploadDocument(riderId, type, fileUri);
+      console.log('[kyc/uploadDocument] success', document);
       return document;
     } catch (error) {
+      console.error('[kyc/uploadDocument] error', error);
       return rejectWithValue((error as Error).message);
     }
   },

@@ -11,8 +11,8 @@ export type AuthStackParamList = {
 export type RiderTabParamList = {
   Home: undefined;
   Plans: undefined;
-  Profile: undefined;
   Support: undefined;
+  Settings: undefined;
 };
 
 export type AdminTabParamList = {
@@ -28,6 +28,7 @@ export type RiderStackParamList = {
   PaymentHistory: undefined;
   Onboarding: undefined;
   KYC: undefined;
+  Profile: undefined;
 };
 
 export type AdminStackParamList = {

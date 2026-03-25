@@ -22,8 +22,8 @@ export async function getProfile(
     .from('riders')
     .select('*')
     .eq('user_id', userId)
-    .single();
-  if (error && error.code !== 'PGRST116') {
+    .maybeSingle();
+  if (error) {
     throw new Error(`Failed to fetch rider profile: ${error.message}`);
   }
   return (profile as RiderProfile) ?? null;

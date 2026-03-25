@@ -8,7 +8,6 @@ import {
   Alert,
 } from 'react-native';
 import {
-  ShieldCheck,
   FileCheck,
   AlertCircle,
   Clock,
@@ -171,21 +170,10 @@ export const KYCScreen: React.FC = () => {
       keyboardShouldPersistTaps="handled"
     >
       <View className="px-6 py-6">
-        {/* Header */}
-        <View className="flex-row items-center gap-3 mb-6">
-          <ShieldCheck size={28} color={colors.primary} />
-          <View>
-            <Text
-              className="text-xl font-bold text-[#141c6c]"
-              testID="kyc-title"
-            >
-              KYC Verification
-            </Text>
-            <Text className="text-sm text-[#6b7280]">
-              Upload your documents to get verified
-            </Text>
-          </View>
-        </View>
+        {/* Subtitle */}
+        <Text className="text-sm text-[#6b7280] mb-6">
+          Upload your documents to get verified
+        </Text>
 
         {/* KYC Status Card */}
         <View

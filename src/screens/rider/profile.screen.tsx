@@ -112,13 +112,6 @@ export function ProfileScreen() {
       contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
     >
       {/* Header */}
-      <Text
-        testID="profile-header"
-        style={{ fontSize: 24, fontWeight: '700', color: colors.textMain, marginBottom: 16 }}
-      >
-        My Profile
-      </Text>
-
       {/* KYC status + profile completion */}
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16, gap: 12 }}>
         <KYCStatusBadge status={kycStatus ?? 'not_started'} />
