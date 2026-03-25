@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { X } from 'lucide-react-native';
 import { DocumentPicker } from '../../components/forms/document-picker.component';
 import { colors } from '../../config/theme.constant';
 import type { KYCDocumentType } from '../../enums/kyc-document-type.enum';
@@ -25,20 +26,16 @@ export interface UploadState {
 interface DocumentUploaderProps {
   documents: KYCDocument[];
   uploadState: UploadState;
-  onUpload: (type: KYCDocumentType, uri: string) => void;
-  onRemove: (type: KYCDocumentType) => void;
+  onUpload: (type: KYCDocumentType, uris: string[]) => void;
+  onRemove: (type: KYCDocumentType, docId?: string) => void;
 }
 
-function getDocumentUri(
-  documents: KYCDocument[],
-  type: KYCDocumentType,
-): string | undefined {
-  const doc = documents.find((d) => d.document_type === type);
-  return doc?.file_url || undefined;
+function getDocsForType(documents: KYCDocument[], type: KYCDocumentType): KYCDocument[] {
+  return documents.filter((d) => d.document_type === type);
 }
 
 function getUploadStatusLabel(
-  documents: KYCDocument[],
+  docs: KYCDocument[],
   type: KYCDocumentType,
   uploadState: UploadState,
 ): { text: string; color: string } {
@@ -48,9 +45,8 @@ function getUploadStatusLabel(
   if (uploadState.errors[type]) {
     return { text: 'Upload failed', color: '#ef4444' };
   }
-  const doc = documents.find((d) => d.document_type === type);
-  if (doc) {
-    return { text: 'Uploaded', color: colors.green };
+  if (docs.length > 0) {
+    return { text: `${docs.length} uploaded`, color: colors.green };
   }
   return { text: 'Not uploaded', color: colors.mutedLight };
 }
@@ -64,19 +60,20 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
   return (
     <View testID="document-uploader">
       {DOCUMENT_SLOTS.map((slot) => {
-        const uri = getDocumentUri(documents, slot.type);
-        const status = getUploadStatusLabel(documents, slot.type, uploadState);
+        const docs = getDocsForType(documents, slot.type);
+        const status = getUploadStatusLabel(docs, slot.type, uploadState);
         const isUploading = uploadState.uploading === slot.type;
         const errorMsg = uploadState.errors[slot.type];
 
         return (
           <View
             key={slot.type}
-            className="mb-2"
+            className="mb-4"
             testID={`document-slot-${slot.type}`}
           >
             <View className="flex-row items-center justify-between mb-1">
               <View className="flex-row items-center gap-2">
+                <Text className="text-sm font-medium text-[#141c6c]">{slot.label}</Text>
                 {isUploading && (
                   <ActivityIndicator size="small" color={colors.primary} />
                 )}
@@ -90,11 +87,33 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
               </Text>
             </View>
 
+            {/* Show already uploaded thumbnails */}
+            {docs.length > 0 && (
+              <View className="flex-row flex-wrap gap-2 mb-2">
+                {docs.map((doc) => (
+                  <View key={doc.id} className="relative">
+                    <Image
+                      source={{ uri: doc.file_url }}
+                      className="w-20 h-20 rounded-lg"
+                      resizeMode="cover"
+                    />
+                    <TouchableOpacity
+                      className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-5 h-5 items-center justify-center"
+                      onPress={() => onRemove(slot.type, doc.id)}
+                      accessibilityLabel={`Remove ${slot.label}`}
+                    >
+                      <X size={12} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Add more button */}
             <DocumentPicker
-              label={slot.label}
+              label={docs.length > 0 ? `Add more ${slot.label}` : slot.label}
               documentType={slot.type}
-              imageUri={uri}
-              onImageSelected={(selectedUri) => onUpload(slot.type, selectedUri)}
+              onImageSelected={(uris) => onUpload(slot.type, uris)}
               onRemove={() => onRemove(slot.type)}
               uploading={isUploading}
               error={errorMsg}

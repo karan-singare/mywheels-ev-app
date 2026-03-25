@@ -17,10 +17,7 @@ export async function uploadDocument(
 
   const { data, error } = await supabase
     .from('kyc_documents')
-    .upsert(
-      { rider_id: riderId, document_type: type, file_path: filePath },
-      { onConflict: 'rider_id,document_type' },
-    )
+    .insert({ rider_id: riderId, document_type: type, file_path: filePath })
     .select()
     .single();
   if (error) throw new Error(`Failed to save KYC document record: ${error.message}`);

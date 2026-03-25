@@ -56,14 +56,7 @@ const kycSlice = createSlice({
       (state, action) => {
         state.loading = false;
         if (action.payload) {
-          const existing = state.documents.findIndex(
-            (d) => d.document_type === action.payload.document_type,
-          );
-          if (existing >= 0) {
-            state.documents[existing] = action.payload;
-          } else {
-            state.documents.push(action.payload);
-          }
+          state.documents.push(action.payload);
           if (state.status === 'not_started') {
             state.status = 'in_progress';
           }

@@ -106,12 +106,14 @@ export const KYCScreen: React.FC = () => {
   }, [error, uploadState.uploading]);
 
   const handleUpload = useCallback(
-    (type: KYCDocumentType, uri: string) => {
+    (type: KYCDocumentType, uris: string[]) => {
       setUploadState((prev) => ({
         uploading: type,
         errors: { ...prev.errors, [type]: undefined },
       }));
-      uploadDocument(type, uri);
+      for (const uri of uris) {
+        uploadDocument(type, uri);
+      }
     },
     [uploadDocument],
   );

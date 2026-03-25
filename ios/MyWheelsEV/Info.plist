@@ -35,6 +35,12 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>MyWheels EV needs camera access to capture your KYC documents.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>MyWheels EV needs photo library access to upload your KYC documents.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>MyWheels EV needs permission to save photos.</string>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

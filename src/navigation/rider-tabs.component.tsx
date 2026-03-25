@@ -38,6 +38,7 @@ function RiderTabsNavigator() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        animation: 'fade',
         tabBarActiveTintColor: colors.green,
         tabBarInactiveTintColor: colors.mutedLight,
         tabBarStyle: {
@@ -72,7 +73,7 @@ function RiderTabsNavigator() {
 
 export function RiderTabs() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right', animationDuration: 200 }}>
       <Stack.Screen name="RiderTabs" component={RiderTabsNavigator} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="PaymentHistory" component={PaymentHistoryScreen} />
