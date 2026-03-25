@@ -1,15 +1,15 @@
 import React from 'react';
 import { colors } from '../../config/theme.constant';
-import { Box } from '../../../components/ui/box';
-import { Text } from '../../../components/ui/text';
+import { Box } from '@gluestackui/box';
+import { Text } from '@gluestackui/text';
 import {
   FormControl,
   FormControlLabel,
   FormControlLabelText,
   FormControlError,
   FormControlErrorText,
-} from '../../../components/ui/form-control';
-import { Input, InputField } from '../../../components/ui/input';
+} from '@gluestackui/form-control';
+import { Input, InputField } from '@gluestackui/input';
 
 export interface PhoneInputProps {
   value: string;

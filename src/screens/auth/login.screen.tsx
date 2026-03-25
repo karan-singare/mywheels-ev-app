@@ -9,23 +9,23 @@ import { isValidIndianPhone } from '../../utils/validators.util';
 import { colors } from '../../config/theme.constant';
 import type { AuthStackParamList } from '../../types/navigation.type';
 
-import { KeyboardAvoidingView } from '../../../components/ui/keyboard-avoiding-view';
-import { ScrollView } from '../../../components/ui/scroll-view';
-import { VStack } from '../../../components/ui/vstack';
-import { Heading } from '../../../components/ui/heading';
-import { Text } from '../../../components/ui/text';
-import { Button, ButtonText, ButtonSpinner } from '../../../components/ui/button';
-import { Pressable } from '../../../components/ui/pressable';
+import { KeyboardAvoidingView } from '@gluestackui/keyboard-avoiding-view';
+import { ScrollView } from '@gluestackui/scroll-view';
+import { VStack } from '@gluestackui/vstack';
+import { Heading } from '@gluestackui/heading';
+import { Text } from '@gluestackui/text';
+import { Button, ButtonText, ButtonSpinner } from '@gluestackui/button';
+import { Pressable } from '@gluestackui/pressable';
 import {
   FormControl,
   FormControlLabel,
   FormControlLabelText,
   FormControlError,
   FormControlErrorText,
-} from '../../../components/ui/form-control';
-import { Input, InputField, InputSlot } from '../../../components/ui/input';
-import { Alert, AlertText } from '../../../components/ui/alert';
-import { HStack } from '../../../components/ui/hstack';
+} from '@gluestackui/form-control';
+import { Input, InputField, InputSlot } from '@gluestackui/input';
+import { Alert, AlertText } from '@gluestackui/alert';
+import { HStack } from '@gluestackui/hstack';
 
 type LoginNavProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
