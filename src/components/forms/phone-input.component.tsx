@@ -1,5 +1,5 @@
 import React from 'react';
-import { colors } from '../../config/theme.constant';
+import { colors } from '@config';
 import { Box } from '@gluestackui/box';
 import { Text } from '@gluestackui/text';
 import {

@@ -3,11 +3,11 @@ import { Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Eye, EyeOff } from 'lucide-react-native';
-import { PhoneInput } from '../../components/forms/phone-input.component';
-import { useAuth } from '../../hooks/use-auth.hook';
-import { isValidIndianPhone } from '../../utils/validators.util';
-import { colors } from '../../config/theme.constant';
-import type { AuthStackParamList } from '../../types/navigation.type';
+import { PhoneInput } from '@components';
+import { useAuth } from '@hooks';
+import { isValidIndianPhone } from '@utils';
+import { colors } from '@config';
+import type { AuthStackParamList } from '@types';
 
 import { KeyboardAvoidingView } from '@gluestackui/keyboard-avoiding-view';
 import { ScrollView } from '@gluestackui/scroll-view';
